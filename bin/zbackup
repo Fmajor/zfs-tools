@@ -160,26 +160,25 @@ def backup_or_reap_snapshots(tier, filesystem, properties, options):
 
 def format_backup_properties(properties):
     """Format the properties to show what will be done by zbackup.
-
-Note that the handling of backup properties with different sources is carefully designed - see the logic in backup_or_reap_snapshots() above.  
-"""
+    Note that the handling of backup properties with different sources is carefully designed - see the logic in backup_or_reap_snapshots() above.  
+    """
     # split properties according to source
     local_and_defaults = {}
-    nonlocal = {}
+    non_local = {}
     for name in properties.keys():
         if properties[name][1] == 'local':
             local_and_defaults[name] = properties[name]
         else:
-            nonlocal[name] = properties[name]
-    # nonlocal snapshot properties provide defaults for snapshot-limit if not set locally
-    for name in nonlocal.keys():
+            non_local[name] = properties[name]
+    # non_local snapshot properties provide defaults for snapshot-limit if not set locally
+    for name in non_local.keys():
         snapshot_tier = None
         if name.endswith(SNAPSHOTS_PROPERTY_SUFFIX):
             snapshot_tier = name[:-len(SNAPSHOTS_PROPERTY_SUFFIX)]
         elif name.endswith(SNAPSHOT_LIMIT_PROPERTY_SUFFIX):
             snapshot_tier = name[:-len(SNAPSHOT_LIMIT_PROPERTY_SUFFIX)]
         if snapshot_tier != None and not local_and_defaults.has_key(snapshot_limit_property(snapshot_tier)):
-            local_and_defaults[snapshot_limit_property(snapshot_tier)] = nonlocal[name]
+            local_and_defaults[snapshot_limit_property(snapshot_tier)] = non_local[name]
 
     names = [name for name in sorted(local_and_defaults.keys()) if name not in [REPLICA_PROPERTY, REPLICATE_PROPERTY]] \
             + [name for name in sorted(local_and_defaults.keys()) if name     in [REPLICA_PROPERTY, REPLICATE_PROPERTY]]

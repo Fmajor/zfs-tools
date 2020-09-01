@@ -33,7 +33,7 @@ opts,args = parser.parse_args(sys.argv[1:])
 try:
 	bufsize = int(opts.bufsize)
 	assert bufsize >= 16384 or bufsize == -1
-except (ValueError,AssertionError),e:
+except (ValueError,AssertionError) as e:
 	parser.error("bufsize must be an integer greater than 16384")
 
 if len(args) == 2:
